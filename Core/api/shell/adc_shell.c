@@ -15,7 +15,6 @@
 #include "main.h" 
 #include "shell_ext.h"
 #include "shell_port.h"
-#include "bsp_adc.h"
 #include "debug_print.h"
 #include "stdlib.h" 
 
@@ -32,7 +31,7 @@ static int adc_shell(int argc, char *argv[])
         display_usage();
         return 0;
     }
-    float vol5v = ADC_get_value();
+    float vol5v = 11.0f;
     LOG_RAW("The voltage of XBEAM is = %0.2f v\r\n", vol5v);
 
     return 0;

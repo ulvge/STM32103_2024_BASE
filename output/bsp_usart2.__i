@@ -1,0 +1,6 @@
+--c99 --gnu -c --cpu Cortex-M3 -D__MICROLIB -g -O0 -Otime --apcs=interwork --split_sections -I ../Core/Inc -I ..\Drivers\STM32F1xx_HAL_Driver\Inc -I ..\Drivers\STM32F1xx_HAL_Driver\Inc\Legacy -I ..\Drivers\CMSIS\Device\ST\STM32F1xx\Include -I ../Middlewares/Third_Party/FreeRTOS/Source/include -I ..\Middlewares\Third_Party\FreeRTOS\Source\portable\MemMang -I ..\Middlewares\Third_Party\FreeRTOS\Source\portable\RVDS\ARM_CM3 -I ..\Core\bsp -I ..\Core\api -I ..\Core\api\shell -I ..\Core\api\cm_backtrace
+-I.\RTE\_I2C_ForwardUart_Update
+-IC:\Users\admin\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include
+-IC:\Users\admin\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\2.4.1\Device\Include
+-D__UVISION_VERSION="538" -D_RTE_ -DSTM32F10X_HD -D_RTE_ -DUSE_HAL_DRIVER -DSTM32F103xE
+-o ..\output\bsp_usart2.o --depend ..\output\bsp_usart2.d "..\Core\bsp\bsp_usart2.c"

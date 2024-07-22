@@ -39,12 +39,21 @@ extern "C" {
 /** @defgroup GPIO_Exported_Types GPIO Exported Types
   * @{
   */
-
+/**
+  * @brief  GPIO Bit SET and Bit RESET enumeration
+  */
+typedef enum
+{
+  GPIO_PIN_RESET = 0u,
+  GPIO_PIN_SET
+} GPIO_PinState;
 /**
   * @brief GPIO Init structure definition
   */
 typedef struct
 {
+    GPIO_TypeDef * PORT;
+    char *Name;
   uint32_t Pin;       /*!< Specifies the GPIO pins to be configured.
                            This parameter can be any value of @ref GPIO_pins_define */
 
@@ -56,16 +65,11 @@ typedef struct
 
   uint32_t Speed;     /*!< Specifies the speed for the selected pins.
                            This parameter can be a value of @ref GPIO_speed_define */
+  GPIO_PinState ActiveSignal;
+
 } GPIO_InitTypeDef;
 
-/**
-  * @brief  GPIO Bit SET and Bit RESET enumeration
-  */
-typedef enum
-{
-  GPIO_PIN_RESET = 0u,
-  GPIO_PIN_SET
-} GPIO_PinState;
+
 /**
   * @}
   */

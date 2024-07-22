@@ -2344,7 +2344,7 @@ HAL_StatusTypeDef HAL_UART_AbortReceive_IT(UART_HandleTypeDef *huart)
   *                the configuration information for the specified UART module.
   * @retval None
   */
-void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
+__weak void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
 {
   uint32_t isrflags   = READ_REG(huart->Instance->SR);
   uint32_t cr1its     = READ_REG(huart->Instance->CR1);

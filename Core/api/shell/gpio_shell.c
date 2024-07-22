@@ -82,29 +82,6 @@ static void parse_arguments(int argc, char **argv)
         }
     }
 }
-static void int16ToBinaryString(int16_t num, char *binaryString) {
-    int index = 0;
-    bool is0 = true;
-    // 从最高位开始，逐位检查并存放到字符串数组中
-    for (int i = 31; i >= 0; i--) {
-        int bit = GET_BIT(num, i);
-        if (is0 && (bit == 1)) {
-            is0 = false;
-        }
-        if (is0){
-            continue;
-        }
-        binaryString[index++] = GET_BIT(num, i) + '0';
-        // 在每四位之后添加一个空格
-        if (i % 4 == 0 && i != 0)
-            binaryString[index++] = ' ';
-    }
-    // 在字符串末尾添加结束符
-    if (index == 0){
-        binaryString[index++] = '0';
-    }
-    binaryString[index] = '\0';
-}
 static int getGPIOActive(int argc, char **argv, int index)
 {
     GPIO_Idex gpioIndex = (GPIO_Idex)atoi(argv[argc - 1]);
@@ -115,10 +92,8 @@ static int getGPIOActive(int argc, char **argv, int index)
     if (res == -1) {
         LOG_RAW("gpio index = %d: get gpio error, check the input para\r\n", gpioIndex);
     }else{
-        char binaryString[40];
-        int16ToBinaryString(res, binaryString);
         LOG_RAW("index ,    name,              config ActiveSignal,  is actived/val \r\n");
-        LOG_RAW("  %d,    %-20s,          %d,               %s\r\n", gpioIndex, *name, config, binaryString);
+        LOG_RAW("  %d,    %-20s,          %d,               %d\r\n", gpioIndex, *name, config, res);
     }
     return 0;
 }

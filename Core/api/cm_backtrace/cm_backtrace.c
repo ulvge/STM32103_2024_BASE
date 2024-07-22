@@ -676,16 +676,16 @@ static RTC_HandleTypeDef hrtc = {
 #define HARDFAULT_STACK_SAVED_GROUP_COUNT (HARDFAULT_STACK_SAVED_BUFF_SIZE >> 1)
 
 static void cm_backtrace_hook(uint32_t lr, uint32_t pc) {
-    __HAL_RCC_BKPRAM_CLK_ENABLE();
-    uint32_t errorTotalCount = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR31);
+//    __HAL_RCC_BKPRAM_CLK_ENABLE();
+//    uint32_t errorTotalCount = HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR31);
 
-    uint32_t idx = errorTotalCount % HARDFAULT_STACK_SAVED_GROUP_COUNT;
-    HAL_PWR_EnableBkUpAccess();
-    HAL_RTCEx_BKUPWrite(&hrtc, 2 * idx, lr);
-    HAL_RTCEx_BKUPWrite(&hrtc, 2 * idx + 1, pc);
+//    uint32_t idx = errorTotalCount % HARDFAULT_STACK_SAVED_GROUP_COUNT;
+//    HAL_PWR_EnableBkUpAccess();
+//    HAL_RTCEx_BKUPWrite(&hrtc, 2 * idx, lr);
+//    HAL_RTCEx_BKUPWrite(&hrtc, 2 * idx + 1, pc);
 
-    errorTotalCount++;
-    HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR31, errorTotalCount);
+//    errorTotalCount++;
+//    HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR31, errorTotalCount);
 }
 
 // shell command

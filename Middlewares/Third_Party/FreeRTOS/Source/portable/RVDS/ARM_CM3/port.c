@@ -407,7 +407,7 @@ __asm void xPortPendSVHandler( void )
 	nop
 }
 /*-----------------------------------------------------------*/
-
+#define time_update HAL_IncTick
 void time_update(void);
 
 void xPortSysTickHandler( void )

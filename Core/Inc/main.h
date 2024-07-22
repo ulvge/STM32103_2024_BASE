@@ -57,10 +57,7 @@ extern "C" {
 extern BaseType_t xHigherPriorityTaskWoken_YES;
 extern BaseType_t xHigherPriorityTaskWoken_NO;
 
-extern TIM_HandleTypeDef g_htim5;
 extern int g_debugLevel;
-extern void Task_outputWave(void *argument);
-extern inline uint32_t Get_dealyTimer_cnt(void);
 /* Exported functions prototypes ---------------------------------------------*/
 extern void Error_Handler(void);
 

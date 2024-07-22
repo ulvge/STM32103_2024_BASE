@@ -1,7 +1,7 @@
 #include <string.h>
 #include "main.h"
 #include "bsp_uartcomm.h"
-#include "bsp_usart2.h"
+#include "bsp_usart1.h"
 #include "task.h"
 #include "freertos.h"
 #include "semphr.h"
@@ -178,5 +178,5 @@ void UART_sendContinue(USART_TypeDef *usart_periph)
 
 void UART_init(void)
 {
-    UART2_init();
+    UART1_init();
 }

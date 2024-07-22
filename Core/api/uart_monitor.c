@@ -5,7 +5,6 @@
 #include "debug_print.h"
 #include "uart_monitor.h"
 #include "bsp_uartcomm.h"
-#include "spi_communication.h"
 
 SemaphoreHandle_t g_sem_uartResend;
 
@@ -22,7 +21,7 @@ void Task_uartMonitor(void *param)
 }
 
 #define UART_RESEND_MAX_COUNT 2
-extern UART_HandleTypeDef g_uart2Handle;
+extern UART_HandleTypeDef g_uart1Handle;
 void uart_PostdMsg(bool isReSend)
 {
     static uint8_t errCount = 0;

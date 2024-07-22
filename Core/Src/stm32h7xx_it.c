@@ -20,7 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32h7xx_it.h"
 #include "main.h"
-#include "bsp_usart2.h"
+#include "bsp_usart1.h"
 #include "freertos.h"
 #include "task.h" 
 #include "bsp_gpio.h" 
@@ -33,7 +33,7 @@ void static HAL_TIM_IRQHandler_tim7TickOverWrite(void);
 extern SPI_HandleTypeDef g_hspi1;
 extern TIM_HandleTypeDef htim7;
 extern DMA_HandleTypeDef g_hdma_usart2_tx;
-extern UART_HandleTypeDef g_uart2Handle;
+extern UART_HandleTypeDef g_uart1Handle;
 
 extern void xPortSysTickHandler(void);
 
@@ -171,8 +171,8 @@ void DMA1_Stream1_IRQHandler(void)
 */
 void USART2_IRQHandler(void)
 {
-  HAL_UART_IRQHandler(&g_uart2Handle);
-  //UART_RxISR_8BIT(&g_uart2Handle);
+  HAL_UART_IRQHandler(&g_uart1Handle);
+  //UART_RxISR_8BIT(&g_uart1Handle);
 }
 
 inline void static HAL_TIM_IRQHandler_tim7TickOverWrite(void)

@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "bsp_usart2.h"
+#include "bsp_usart1.h"
 #include "bsp_adc.h"
 #include "bsp_spi1_slave.h"
 /* USER CODE BEGIN Includes */
