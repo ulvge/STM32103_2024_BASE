@@ -15,7 +15,6 @@ typedef struct {
     bool   dmaBusy;
 }UART_PARA_STRUCT;
 
-bool UART_sendDataBlock(USART_TypeDef *usart_periph, const uint8_t *str, uint16_t len);
 //int fputc(int ch, FILE *f);
 bool com_registHandler(UART_PARA_STRUCT *uartPara);
 

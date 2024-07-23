@@ -17,10 +17,8 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <string.h>
 #include "main.h"
 #include "freertos.h"
-#include "bsp_i2c.h"
 #include "bsp_uartcomm.h"
 #include "debug_print.h"
 #include "bsp_gpio.h"

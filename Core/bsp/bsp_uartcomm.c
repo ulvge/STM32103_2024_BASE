@@ -9,6 +9,8 @@
 
 #define UART_NUM_TOTAL 1
 
+static UART_PARA_STRUCT *com_getHandler(USART_TypeDef *usart_periph);
+
 static UART_PARA_STRUCT *g_pUARTSHandler[UART_NUM_TOTAL] = {NULL};	
 bool g_isPrintUseFifo = true;
 
@@ -18,7 +20,12 @@ int fputc(int ch, FILE *f)
     if (g_isPrintUseFifo) {
         return UART_sendByte(DEBUG_UART_PERIPH, ch);
     } else {
-        return UART_sendDataBlock(DEBUG_UART_PERIPH, (uint8_t *)&ch, 1);
+        UART_PARA_STRUCT *uartPara = com_getHandler(DEBUG_UART_PERIPH);
+        if (uartPara == NULL) {
+            return false;
+        }
+        uint8_t val = (uint8_t )ch;
+        return HAL_UART_Transmit(uartPara->uartHandle, &val, 1, 1);
     }
 }
 bool com_registHandler(UART_PARA_STRUCT *uartPara)
@@ -40,7 +47,7 @@ bool com_registHandler(UART_PARA_STRUCT *uartPara)
         return false;
     }
 }
-UART_PARA_STRUCT *com_getHandler(USART_TypeDef *usart_periph)
+static UART_PARA_STRUCT *com_getHandler(USART_TypeDef *usart_periph)
 {
     for (uint32_t i = 0; i < UART_NUM_TOTAL; i++)
     {
@@ -85,18 +92,22 @@ bool UART_sendData(USART_TypeDef *usart_periph, uint8_t *str, uint16_t len)
         return false;
     }
     if (uartPara->dmaUsed == false) {
-        if (FIFO_Writes(&uartPara->fifo.sfifo, str, len) == FALSE){
-			UART_sendDataBlock(usart_periph, str, len);
-            return false;
-        }
+        if (xTaskGetSchedulerState() != taskSCHEDULER_RUNNING) {
+            HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, len);
+        }else{
+            if (FIFO_Writes(&uartPara->fifo.sfifo, str, len) == FALSE){
+                HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, len);
+                return false;
+            }
 
-        if(uartPara->fifo.status != UART_SENDING) {
-            UART_sendContinueIT(usart_periph, &uartPara->fifo);
+            if(uartPara->fifo.status != UART_SENDING) {
+                UART_sendContinueIT(usart_periph, &uartPara->fifo);
+            }
         }
         return true;
     }else{ //use DMA
-        if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
-            UART_sendDataBlock(usart_periph, str, len);
+        if (xTaskGetSchedulerState() != taskSCHEDULER_RUNNING) {
+            HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, len);
         }else{
             if (FIFO_Writes(&uartPara->fifo.sfifo, str, len) == FALSE){ // write failed
                 HAL_UART_Transmit_DMA(uartPara->uartHandle, (uint8_t*)str, len); // transmission directly
@@ -107,20 +118,6 @@ bool UART_sendData(USART_TypeDef *usart_periph, uint8_t *str, uint16_t len)
         }
         return true;
     }
-}
-/// @brief NO fifo,can be called in HardFault_Handler
-/// @param usart_periph 
-/// @param str 
-/// @param len 
-bool UART_sendDataBlock(USART_TypeDef *usart_periph, const uint8_t *str, uint16_t len)
-{
-    UART_PARA_STRUCT *uartPara = com_getHandler(usart_periph);
-    if (uartPara == NULL) {
-        return false;
-    }
-    //usart_periph->DR = (uint8_t)(*pdata8bits & 0xFFU);
-    HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, len);
-    return true;
 }
 
 /// @brief read one byte from fifo,and start transmit
