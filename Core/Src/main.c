@@ -35,9 +35,6 @@ BaseType_t xHigherPriorityTaskWoken_NO = pdFALSE;
 I2C_HandleTypeDef hi2c1;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
-DMA_HandleTypeDef hdma_usart1_tx;
-
-
 void SystemClock_Config(void);
 
 int g_debugLevel = DBG_LOG;
@@ -60,7 +57,8 @@ static const char *projectInfo =
 
 static void DebugConfig(void)
 {
-    //__HAL_DBGMCU_FREEZE_WWDG1();
+    //DBGMCU_CR_DBG_IWDG_STOP();
+    //DBGMCU_CR_DBG_WWDG_STOP();
 }
 
 /**

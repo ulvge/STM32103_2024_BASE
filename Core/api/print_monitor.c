@@ -52,7 +52,7 @@ void PrintMonitor_PostdMsg(USART_TypeDef * usart_periph, bool isReSend)
         if (++errCount > UART_RESEND_MAX_COUNT){
             return;
         }else{
-            LOG_E("When uart sends data, repeated transmission occurs\r\n");
+            //LOG_E("When uart sends data, repeated transmission occurs\r\n");
         }
     }else{
         errCount = 0;
@@ -65,7 +65,7 @@ void PrintMonitor_PostdMsg(USART_TypeDef * usart_periph, bool isReSend)
     }
     if (err == pdFAIL)
     {
-        LOG_E("PrintMonitor PostdMsg failed\r\n");
+        //LOG_E("PrintMonitor PostdMsg failed\r\n");
 		errCount = errCount;
     }
 }

@@ -69,10 +69,11 @@ portINLINE  BOOLEAN FIFO_Empty(FIFO *fifo)
  
 BOOLEAN FIFO_Read(FIFO *fifo, INT8U *data)
 {
+    uint32_t x=API_EnterCirtical();
     if (fifo->occupy == 0) {
+		API_ExitCirtical(x);
 		return false;
 	}
-    uint32_t x=API_EnterCirtical();
     *data = *fifo->rp++;
     if (fifo->rp >= fifo->limit) {
 		fifo->rp = fifo->array;
@@ -84,10 +85,11 @@ BOOLEAN FIFO_Read(FIFO *fifo, INT8U *data)
 
 BOOLEAN FIFO_ReadN(FIFO *fifo, INT8U *data, INT16U dataSize, INT16U *readLen)
 {
+    uint32_t x=API_EnterCirtical();
     if (fifo->occupy == 0) {
+		API_ExitCirtical(x);
 		return false;
 	}
-    uint32_t x=API_EnterCirtical();
     if (dataSize < fifo->occupy) {
         *readLen = dataSize;
     } else {

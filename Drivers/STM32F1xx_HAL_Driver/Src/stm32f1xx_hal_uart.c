@@ -2404,6 +2404,7 @@ void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
 
       /* If Overrun error occurs, or if any error occurs in DMA mode reception,
          consider error as blocking */
+      huart->ErrorCode = RESET;
       dmarequest = HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR);
       if (((huart->ErrorCode & HAL_UART_ERROR_ORE) != RESET) || dmarequest)
       {
