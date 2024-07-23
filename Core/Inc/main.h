@@ -31,10 +31,7 @@ extern "C" {
 #include "freertos.h"
 		
 
-#ifndef STM32H7A3xx
-#define STM32H7A3xx
-#endif
-#define DEBUG_UART_PERIPH    USART2
+#define DEBUG_UART_PERIPH    USART1
 
 #define    HARDWARE_VERSION     "1.0"
 #define    SOFT_VERSION         "1.0"

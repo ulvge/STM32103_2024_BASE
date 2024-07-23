@@ -4,7 +4,7 @@
 #include "main.h"
 #include "FIFO.h"
 #include "bsp_uartcomm.h"
-#include "uart_monitor.h"
+#include "print_monitor.h"
 #include "stm32f1xx_ll_usart.h"
 
 UART_HandleTypeDef g_uart1Handle = {
@@ -20,12 +20,14 @@ UART_HandleTypeDef g_uart1Handle = {
 static UART_PARA_STRUCT g_UARTPara = {
     .periph = USART1,
     .uartHandle = &g_uart1Handle,
+    .dmaUsed = false,
+    .dmaBusy = false,
 };
 
 DMA_HandleTypeDef g_hdma_usart1_tx;
 
 #define UART1_BUFF_SIZE 	(200)
-static INT8U g_buffSend[2048] __attribute__((section(".MY_SECTION")));
+static INT8U g_buffSend[UART1_BUFF_SIZE];
 static INT8U g_buffRec[UART1_BUFF_SIZE];
 
 void UART1_init(void)
@@ -36,7 +38,12 @@ void UART1_init(void)
     com_registHandler(&g_UARTPara);
 
 	LL_USART_EnableIT_RXNE(g_uart1Handle.Instance);
-    __HAL_DMA_ENABLE_IT(&g_hdma_usart1_tx, DMA_IT_TC);
+    if (g_UARTPara.dmaUsed == false){
+        LL_USART_EnableIT_TC(g_uart1Handle.Instance);
+    }
+    //__HAL_DMA_ENABLE_IT(&g_hdma_usart1_tx, DMA_IT_TC);
+    
+    PrintMonitorInit();
 }
 void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
 {
@@ -51,7 +58,7 @@ void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
     }
 	if (isrflags & USART_SR_TC){
 		huart->gState = HAL_UART_STATE_READY;
-		uart_PostdMsg(false);
+		PrintMonitor_PostdMsg(g_UARTPara.periph, false);
 	}
     __HAL_UART_CLEAR_FLAG(huart, USART_SR_PE | USART_SR_FE | USART_SR_ORE | USART_SR_NE | USART_SR_TC);
 }

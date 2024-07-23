@@ -26,7 +26,7 @@
 #include "shell_port.h"
 #include "api_utc.h"
 #include "cm_backtrace.h"
-#include "uart_monitor.h"
+#include "print_monitor.h"
 #include "bsp_i2c.h"
 
 /* Private function prototypes -----------------------------------------------*/
@@ -101,7 +101,7 @@ int main(void)
     GPIO_Init();
     MX_DMA_Init();
 
-    i2c_int();
+    //i2c_int();
     UART_init();
     LOG_RAW("%s", projectInfo); 
     DebugConfig();

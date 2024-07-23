@@ -10,6 +10,9 @@ typedef struct {
     USART_TypeDef               *periph; 
     FIFO_Buf_STRUCT             fifo;
     UART_HandleTypeDef          *uartHandle;
+    
+    bool   dmaUsed;
+    bool   dmaBusy;
 }UART_PARA_STRUCT;
 
 bool UART_sendDataBlock(USART_TypeDef *usart_periph, const uint8_t *str, uint16_t len);
@@ -20,8 +23,9 @@ bool UART_getByte(USART_TypeDef *usart_periph, uint8_t *p_buffer);
 bool UART_getData(USART_TypeDef *usart_periph, uint8_t *p_buffer, uint32_t buffSize, INT16U *retLen);
 bool UART_sendByte(USART_TypeDef *usart_periph, uint8_t dat);
 bool UART_sendData(USART_TypeDef *usart_periph, uint8_t *str, uint16_t len);
-INT8U UART_sendFinally(USART_TypeDef *usart_periph, FIFO_Buf_STRUCT *fifoUart);
-void UART_sendContinue(USART_TypeDef *usart_periph);
+INT8U UART_sendContinueIT(USART_TypeDef * usart_periph, FIFO_Buf_STRUCT *fifoUart);
+void UART_sendContinueDMA(USART_TypeDef * usart_periph);
+
 void UART_init(void);
 
 #endif /* __BSP_UARTCOMM_H */

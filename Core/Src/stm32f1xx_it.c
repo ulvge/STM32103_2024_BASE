@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f1xx_it.h"
+#include "task.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -180,6 +181,7 @@ void DebugMon_Handler(void)
 //   /* USER CODE END PendSV_IRQn 1 */
 // }
 
+extern void xPortSysTickHandler(void);
 /**
   * @brief This function handles System tick timer.
   */
@@ -189,6 +191,11 @@ void SysTick_Handler(void)
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
+  
+    if(xTaskGetSchedulerState()!=taskSCHEDULER_NOT_STARTED)
+    {
+        xPortSysTickHandler();
+    }
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */

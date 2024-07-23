@@ -54,7 +54,7 @@
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
-          <BrowseInformation>1</BrowseInformation>
+          <BrowseInformation>0</BrowseInformation>
           <ListingPath>..\output\</ListingPath>
           <HexFormatSelection>1</HexFormatSelection>
           <Merge32K>0</Merge32K>
@@ -80,7 +80,7 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>1</RunUserProg1>
+            <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>fromelf --text -a -c --output=..\output\ass.dis   ..\output\*.axf</UserProg1Name>
             <UserProg2Name></UserProg2Name>
@@ -395,9 +395,9 @@
               <FilePath>..\Core\api\FIFO.c</FilePath>
             </File>
             <File>
-              <FileName>uart_monitor.c</FileName>
+              <FileName>print_monitor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Core\api\uart_monitor.c</FilePath>
+              <FilePath>..\Core\api\print_monitor.c</FilePath>
             </File>
           </Files>
         </Group>

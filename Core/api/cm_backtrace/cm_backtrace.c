@@ -559,7 +559,7 @@ static uint32_t statck_del_fpu_regs(uint32_t fault_handler_lr, uint32_t sp) {
 }
 #endif
 
-extern bool g_isPrintNoBlock;
+extern bool g_isPrintUseFifo;
 /**
  * backtrace for fault
  * @note only call once
@@ -582,7 +582,7 @@ void HardFault_Handler_bt(uint32_t fault_handler_lr, uint32_t fault_handler_sp) 
 
     on_fault = true;
 
-	g_isPrintNoBlock = false;
+	g_isPrintUseFifo = false;
     cmb_println("");
     cm_backtrace_firmware_info();
 

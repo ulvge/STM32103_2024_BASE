@@ -5,17 +5,17 @@
 #include "task.h"
 #include "freertos.h"
 #include "semphr.h"
-#include "uart_monitor.h"
+#include "print_monitor.h"
 
 #define UART_NUM_TOTAL 1
 
 static UART_PARA_STRUCT *g_pUARTSHandler[UART_NUM_TOTAL] = {NULL};	
-bool g_isPrintNoBlock = true;
+bool g_isPrintUseFifo = true;
 
 //use FIFO
 int fputc(int ch, FILE *f)
 {
-    if (g_isPrintNoBlock) {
+    if (g_isPrintUseFifo) {
         return UART_sendByte(DEBUG_UART_PERIPH, ch);
     } else {
         return UART_sendDataBlock(DEBUG_UART_PERIPH, (uint8_t *)&ch, 1);
@@ -84,21 +84,30 @@ bool UART_sendData(USART_TypeDef *usart_periph, uint8_t *str, uint16_t len)
     if (uartPara == NULL) {
         return false;
     }
-
-    if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
-        HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, 10);
-    }else{
+    if (uartPara->dmaUsed == false) {
         if (FIFO_Writes(&uartPara->fifo.sfifo, str, len) == FALSE){
-            HAL_UART_Transmit_DMA(uartPara->uartHandle, (uint8_t*)str, len);
-            //HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, 10);
+			UART_sendDataBlock(usart_periph, str, len);
             return false;
-        }else{
-            uart_PostdMsg(false);
         }
-    }
-	return true;
-}
 
+        if(uartPara->fifo.status != UART_SENDING) {
+            UART_sendContinueIT(usart_periph, &uartPara->fifo);
+        }
+        return true;
+    }else{ //use DMA
+        if (xTaskGetSchedulerState() == taskSCHEDULER_NOT_STARTED) {
+            UART_sendDataBlock(usart_periph, str, len);
+        }else{
+            if (FIFO_Writes(&uartPara->fifo.sfifo, str, len) == FALSE){ // write failed
+                HAL_UART_Transmit_DMA(uartPara->uartHandle, (uint8_t*)str, len); // transmission directly
+                return false;
+            }else{
+                PrintMonitor_PostdMsg(usart_periph, false); // transmission later
+            }
+        }
+        return true;
+    }
+}
 /// @brief NO fifo,can be called in HardFault_Handler
 /// @param usart_periph 
 /// @param str 
@@ -109,7 +118,7 @@ bool UART_sendDataBlock(USART_TypeDef *usart_periph, const uint8_t *str, uint16_
     if (uartPara == NULL) {
         return false;
     }
-    HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, 5000);
+    HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, len);
     return true;
 }
 
@@ -117,7 +126,7 @@ bool UART_sendDataBlock(USART_TypeDef *usart_periph, const uint8_t *str, uint16_
 /// @param usart_periph 
 /// @param fifoUart 
 /// @return 
-INT8U UART_sendFinally(USART_TypeDef *usart_periph, FIFO_Buf_STRUCT *fifoUart)
+INT8U UART_sendContinueIT(USART_TypeDef * usart_periph, FIFO_Buf_STRUCT *fifoUart)
 {
     INT8U data;
     if (FIFO_Empty(&(fifoUart->sfifo)))
@@ -133,13 +142,17 @@ INT8U UART_sendFinally(USART_TypeDef *usart_periph, FIFO_Buf_STRUCT *fifoUart)
         }
         if (FIFO_Read(&(fifoUart->sfifo), &data) == true)
         { // sending data
-            UART_sendByte(usart_periph, data);
+			UART_PARA_STRUCT *uartPara = com_getHandler(usart_periph);
+			if (uartPara == NULL) {
+				return false;
+			}
+            HAL_UART_Transmit(uartPara->uartHandle, &data, 1, 1);
         }
         return true;
     }
 }
 
-void UART_sendContinue(USART_TypeDef *usart_periph)
+void UART_sendContinueDMA(USART_TypeDef * usart_periph)
 {
     INT16U sendSize;
 
@@ -160,10 +173,10 @@ void UART_sendContinue(USART_TypeDef *usart_periph)
         sendSize = fifo->limit - fifo->rp;
     }
 
-    //if(HAL_UART_Transmit(uartPara->uartHandle, fifo->rp, sendSize, 100) != HAL_OK )
-    if(HAL_UART_Transmit_DMA(uartPara->uartHandle, fifo->rp, sendSize)!= HAL_OK)
+    /* wait DMA channel transfer complete */
+    if(HAL_UART_Transmit_DMA(uartPara->uartHandle, fifo->rp, sendSize)!= true)
     {
-        uart_PostdMsg(true);
+        PrintMonitor_PostdMsg(usart_periph, true); // Send it later
     }else{
         uint32_t x=API_EnterCirtical();
         fifo->occupy -= sendSize;
@@ -175,7 +188,6 @@ void UART_sendContinue(USART_TypeDef *usart_periph)
         API_ExitCirtical(x);
     }
 }
-
 void UART_init(void)
 {
     UART1_init();
