@@ -11,7 +11,6 @@
 "..\output\shell_port.o"
 "..\output\gpio_shell.o"
 "..\output\shell_cmd_list.o"
-"..\output\adc_shell.o"
 "..\output\main.o"
 "..\output\freertos.o"
 "..\output\stm32f1xx_hal_msp.o"

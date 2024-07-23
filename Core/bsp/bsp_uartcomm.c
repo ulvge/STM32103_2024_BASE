@@ -118,6 +118,7 @@ bool UART_sendDataBlock(USART_TypeDef *usart_periph, const uint8_t *str, uint16_
     if (uartPara == NULL) {
         return false;
     }
+    //usart_periph->DR = (uint8_t)(*pdata8bits & 0xFFU);
     HAL_UART_Transmit(uartPara->uartHandle, (uint8_t*)str, len, len);
     return true;
 }
@@ -146,7 +147,7 @@ INT8U UART_sendContinueIT(USART_TypeDef * usart_periph, FIFO_Buf_STRUCT *fifoUar
 			if (uartPara == NULL) {
 				return false;
 			}
-            HAL_UART_Transmit(uartPara->uartHandle, &data, 1, 1);
+            HAL_UART_Transmit_IT(uartPara->uartHandle, &data, 1);
         }
         return true;
     }

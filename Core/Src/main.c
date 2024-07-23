@@ -17,8 +17,10 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <string.h>
 #include "main.h"
 #include "freertos.h"
+#include "bsp_i2c.h"
 #include "bsp_uartcomm.h"
 #include "debug_print.h"
 #include "bsp_gpio.h"
@@ -35,7 +37,6 @@ BaseType_t xHigherPriorityTaskWoken_NO = pdFALSE;
 I2C_HandleTypeDef hi2c1;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
-UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_tx;
 
 
@@ -103,6 +104,7 @@ int main(void)
 
     //i2c_int();
     UART_init();
+	
     LOG_RAW("%s", projectInfo); 
     DebugConfig();
     LOG_RAW("init other peripherals over\r\n");

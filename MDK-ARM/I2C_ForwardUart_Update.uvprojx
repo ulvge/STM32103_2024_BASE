@@ -454,11 +454,6 @@
               <FileType>1</FileType>
               <FilePath>..\Core\api\shell\shell_cmd_list.c</FilePath>
             </File>
-            <File>
-              <FileName>adc_shell.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\api\shell\adc_shell.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
