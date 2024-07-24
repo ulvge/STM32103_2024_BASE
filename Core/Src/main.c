@@ -28,6 +28,7 @@
 #include "cm_backtrace.h"
 #include "print_monitor.h"
 #include "bsp_i2c.h"
+#include "I2CForward.h"
 
 /* Private function prototypes -----------------------------------------------*/
 BaseType_t xHigherPriorityTaskWoken_YES = pdTRUE;
@@ -98,7 +99,7 @@ int main(void)
     GPIO_Init();
     MX_DMA_Init();
 
-    //i2c_int();
+    i2c_int();
     UART_init();
 	
     LOG_RAW("%s", projectInfo); 
@@ -107,10 +108,11 @@ int main(void)
     /* CmBacktrace initialize */
     cm_backtrace_init("CmBacktrace", HARDWARE_VERSION, SOFT_VERSION);
 
+    xTaskCreate(Task_I2cForWard, "forward", 128 * 4, NULL, 30, NULL );
     /* creation of uartMonitor */
     xTaskCreate(Task_uartMonitor, "uartMonitor", 128 * 4, NULL, 24, &gp_xHandle_Task_uartMonitor );
     /* creation of shell */
-    xTaskCreate(shellTask, "shell", 128 * 2, &shell, 16, &gp_xHandle_Task_shell );
+    //xTaskCreate(shellTask, "shell", 128 * 2, &shell, 16, &gp_xHandle_Task_shell );
 
     LOG_I("create all task finished and succeed\r\n");
 

@@ -17,7 +17,7 @@ UART_HandleTypeDef g_uart1Handle = {
     .Init.HwFlowCtl = UART_HWCONTROL_NONE,
     .Init.OverSampling = UART_OVERSAMPLING_16,
 };
-static UART_PARA_STRUCT g_UARTPara = {
+UART_PARA_STRUCT g_UARTPara = {
     .periph = USART1,
     .uartHandle = &g_uart1Handle,
     .dmaUsed = true,

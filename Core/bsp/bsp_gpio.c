@@ -12,8 +12,14 @@
 #define EXPAND(x) STR(x)
 #define PIN_NAME(val) .Name = EXPAND(val), .Pin = val##_PIN
 
+//硬件上是接的这两个引脚，用来访问eeprom，但是，引脚却不是硬件I2C，只能用模拟I2C来访问
+//把这两个引脚配置成浮空输入，把另外真正的硬件I2C PB6、PB7 和这两个引脚分别对接，这样就可以用硬件I2C访问eeprom了
 const static GPIO_InitTypeDef g_gpioConfigComm[] = {
-    {GLITCH_SHUTDOWN_PORT,  PIN_NAME(GLITCH_SHUTDOWN), GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},//?
+    {GPIOA,  "SCL", GPIO_PIN_2, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    {GPIOA,  "SDA", GPIO_PIN_3, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+	
+    //{GPIOB,  "SCL", GPIO_PIN_6, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    //{GPIOB,  "SDA", GPIO_PIN_7, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
 };
 static void GPIO_InitGPIOs(const GPIO_InitTypeDef *config, uint32_t size)
 {
