@@ -12,7 +12,6 @@
 #include "task.h"
 
 
-#define I2C_OWN_ADDRESS  0x32
 
 #define I2C1_INTERRUPT_ENALBE
 #define I2C_CLOCK_100K  100000U
@@ -44,7 +43,43 @@ static void i2c1_int(void)
         Error_Handler();
     }
 }
-
+void HAL_I2C_EV_IRQHandler(I2C_HandleTypeDef *hi2c)
+{
+    uint32_t itsources                = READ_REG(hi2c->Instance->CR2);
+    uint32_t CurrentXferOptions       = hi2c->XferOptions;
+    HAL_I2C_ModeTypeDef CurrentMode   = hi2c->Mode;
+    HAL_I2C_StateTypeDef CurrentState = hi2c->State;
+    
+    /* Now time to read SR2, this will clear ADDR flag automatically */
+    uint32_t sr2itflags   = READ_REG(hi2c->Instance->SR2);
+    uint32_t sr1itflags   = READ_REG(hi2c->Instance->SR1);
+    
+    /* ADDR set --------------------------------------------------------------*/
+    if ((I2C_CHECK_FLAG(sr1itflags, I2C_FLAG_ADDR) != RESET) && (I2C_CHECK_IT_SOURCE(itsources, I2C_IT_EVT) != RESET))
+    {
+        /* Now time to read SR2, this will clear ADDR flag automatically */
+        if (hi2c->ErrorCode != HAL_I2C_ERROR_NONE)
+        {
+            sr2itflags   = READ_REG(hi2c->Instance->SR2);
+        }
+        //__HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_ADDR); //read only
+        __HAL_I2C_CLEAR_ADDRFLAG(hi2c);
+		return;
+    }
+    /* RXNE set and BTF reset ----------------------------------------------*/
+    if ((I2C_CHECK_FLAG(sr1itflags, I2C_FLAG_RXNE) != RESET) && (I2C_CHECK_IT_SOURCE(itsources, I2C_IT_BUF) != RESET) && (I2C_CHECK_FLAG(sr1itflags, I2C_FLAG_BTF) == RESET))
+    {
+        //I2C_SlaveReceive_RXNE(hi2c);
+        HAL_I2C_SlaveRxCpltCallback(hi2c);
+    }
+	sr1itflags   = READ_REG(hi2c->Instance->SR1);
+    //if ((I2C_CHECK_FLAG(sr1itflags, I2C_FLAG_STOPF) != RESET) && (I2C_CHECK_IT_SOURCE(itsources, I2C_IT_EVT) != RESET))
+    if ((I2C_CHECK_FLAG(sr1itflags, I2C_FLAG_STOPF) != RESET))
+    {
+        //__HAL_I2C_CLEAR_FLAG(hi2c, I2C_FLAG_STOPF); //read only
+        __HAL_I2C_CLEAR_STOPFLAG(hi2c);
+    }
+}
 bool i2c_write_bytes(uint8_t devAddr, const uint8_t *pWriteBuf, uint16_t writeSize)
 {
     #define I2C_WAIT_FOR_IDLE 2
@@ -58,7 +93,8 @@ bool i2c_write_bytes(uint8_t devAddr, const uint8_t *pWriteBuf, uint16_t writeSi
         vTaskDelay(I2C_WAIT_FOR_IDLE);
     }
 
-    if(HAL_I2C_Master_Transmit_IT(&hi2c1, (uint16_t)devAddr, (uint8_t*)pWriteBuf, writeSize)!= HAL_OK)
+    if(HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)devAddr, (uint8_t*)pWriteBuf, writeSize, writeSize)!= HAL_OK)
+    //if(HAL_I2C_Master_Transmit_IT(&hi2c1, (uint16_t)devAddr, (uint8_t*)pWriteBuf, writeSize)!= HAL_OK)
     {
         return false;
     }

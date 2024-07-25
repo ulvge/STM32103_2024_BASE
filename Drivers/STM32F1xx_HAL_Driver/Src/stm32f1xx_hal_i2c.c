@@ -317,6 +317,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_hal.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 /** @addtogroup STM32F1xx_HAL_Driver
   * @{
@@ -4876,7 +4878,7 @@ HAL_StatusTypeDef HAL_I2C_Master_Abort_IT(I2C_HandleTypeDef *hi2c, uint16_t DevA
   *                the configuration information for the specified I2C.
   * @retval None
   */
-void HAL_I2C_EV_IRQHandler(I2C_HandleTypeDef *hi2c)
+__weak void HAL_I2C_EV_IRQHandler(I2C_HandleTypeDef *hi2c)
 {
   uint32_t sr1itflags;
   uint32_t sr2itflags               = 0U;
@@ -7303,21 +7305,24 @@ static HAL_StatusTypeDef I2C_WaitOnFlagUntilTimeout(I2C_HandleTypeDef *hi2c, uin
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
     {
-      if (((HAL_GetTick() - Tickstart) > Timeout) || (Timeout == 0U))
-      {
-        if ((__HAL_I2C_GET_FLAG(hi2c, Flag) == Status))
-        {
-          hi2c->PreviousState     = I2C_STATE_NONE;
-          hi2c->State             = HAL_I2C_STATE_READY;
-          hi2c->Mode              = HAL_I2C_MODE_NONE;
-          hi2c->ErrorCode         |= HAL_I2C_ERROR_TIMEOUT;
+        uint32_t tickOffset = HAL_GetTick() - Tickstart;
+        if ((tickOffset > Timeout) || (Timeout == 0U)) {
+            if ((__HAL_I2C_GET_FLAG(hi2c, Flag) == Status)) {
+                hi2c->PreviousState = I2C_STATE_NONE;
+                hi2c->State = HAL_I2C_STATE_READY;
+                hi2c->Mode = HAL_I2C_MODE_NONE;
+                hi2c->ErrorCode |= HAL_I2C_ERROR_TIMEOUT;
 
-          /* Process Unlocked */
-          __HAL_UNLOCK(hi2c);
+                /* Process Unlocked */
+                __HAL_UNLOCK(hi2c);
 
-          return HAL_ERROR;
+                return HAL_ERROR;
+            }
+        }else{
+            if (tickOffset > 100){
+                vTaskDelay(10);
+            }
         }
-      }
     }
   }
   return HAL_OK;
