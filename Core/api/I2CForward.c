@@ -128,7 +128,7 @@ static bool I2CForward_copyFromUartFifo2Buff(uint8_t *buf, uint32_t len, uint32_
     uint32_t sendSize = 0;
     while (1)
     {
-        vTaskDelay(1);
+        vTaskDelay(2);
         if (occupyBak != fifo->occupy){
             occupyBak = fifo->occupy;
         }else{
@@ -189,37 +189,22 @@ void Task_I2cForWard(void *param)
         for (uint32_t i = 0; i < MAX_RECV_COUNT; i++)
         {
             // 4 I2C send
-//            if (i2c_write_bytes(I2C_DEV_IPMB_ADDR, g_I2cSendBuf, cpyCount)){
-//                vTaskDelay(10);
-//                continue;
-//            }
-
-            // // I2C wait send finished
-            // while (HAL_I2C_GetState(&hi2c1) != HAL_I2C_STATE_READY)
-            // {
-            //     vTaskDelay(1);
-            // }
-            // //I2CFroward_StartRecv(); //switch recv mode
-            // // I2C recv
-            // if (HAL_I2C_Slave_Receive(&hi2c1, &g_I2cRecvBuf, sizeof(g_I2cRecvBuf), 1 * 1000) != HAL_OK){
-            //     //printf("HAL_I2C_Slave_Receive failed\r\n");
-            //     vTaskDelay(10);
-            //     continue;
-            // }
-            // // uart ack send
-            // printf("%d", g_I2cRecvBuf);
+           if (!i2c_write_bytes(I2C_DEV_IPMB_ADDR, g_I2cSendBuf, cpyCount)){
+               vTaskDelay(5);
+               continue;
+           }
             break;
         }
     }
 }
 /*
-    PC                  中转MCU                     目标MCU
-            uart                        I2C
+设备    PC                  中转MCU                     目标MCU
+协议            uart                        I2C
 
-1                                <---枚举握手包
-2      <---枚举握手包 
-3      ack/data--->        
-4                                ack/data--->
+1                                       <---枚举握手包
+2           <---枚举握手包 
+3           ack/data--->        
+4                                       ack/data--->
 
 1 I2c Recv
 2 Uart Tx
@@ -233,8 +218,7 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
         // 1 I2c Recv
         g_I2cRecvBuf = (uint8_t)hi2c->Instance->DR;
         // 2 Uart Tx
-        printf("%d", g_I2cRecvBuf);
-        //I2CFroward_StartRecv();
+        printf("%c", g_I2cRecvBuf);
     }
 }
 
