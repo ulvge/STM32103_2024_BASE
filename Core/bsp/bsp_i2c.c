@@ -93,14 +93,13 @@ bool i2c_write_bytes(uint8_t devAddr, const uint8_t *pWriteBuf, uint16_t writeSi
         vTaskDelay(I2C_WAIT_FOR_IDLE);
     }
 
-    HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
+    __HAL_I2C_DISABLE_IT(&hi2c1, I2C_IT_EVT | I2C_IT_BUF);
+
     if(HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)devAddr, (uint8_t*)pWriteBuf, writeSize, writeSize)!= HAL_OK)
-    //if(HAL_I2C_Master_Transmit_IT(&hi2c1, (uint16_t)devAddr, (uint8_t*)pWriteBuf, writeSize)!= HAL_OK)
     {
         HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
         return false;
     }
-    //while(HAL_I2C_GetError(&hi2c1) == HAL_I2C_ERROR_AF);
-    HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+    __HAL_I2C_ENABLE_IT(&hi2c1, I2C_IT_EVT | I2C_IT_BUF | I2C_IT_ERR);
 	return true;
 }
