@@ -5,7 +5,7 @@
 	最大特点，是双方，即当从机，又当主机。
 	最大特点，是双方，即当从机，又当主机。
 
-复用xmodem协议
+使用xmodem协议，freeRTOS
 
 
 
@@ -39,6 +39,7 @@ PB7     ------> I2C1_SDA
 3           ack/data--->        
 4                                       ack/data--->
 
+对于STM32F103转发设备来说：
 1 I2c Recv		I2C 中断接收
 2 Uart Tx		uart DMA发送	
 3 Uart Rx		uart 中断接收
