@@ -8,6 +8,7 @@
 "..\output\bsp_usart1.o"
 "..\output\bsp_i2c.o"
 "..\output\initcall.o"
+"..\output\pwm.o"
 "..\output\shell.o"
 "..\output\shell_ext.o"
 "..\output\shell_port.o"
@@ -20,7 +21,7 @@
 "..\output\cm_backtrace.o"
 "..\output\cmb_fault.o"
 "..\output\startup_stm32f103xe.o"
-"..\output\system_stm32f1xx_1.o"
+"..\output\system_stm32f1xx.o"
 "..\output\croutine.o"
 "..\output\event_groups.o"
 "..\output\list.o"
@@ -51,4 +52,4 @@
 --library_type=microlib --strict --scatter "..\output\PIC18.sct"
 --keep=*.o(*initcall*) --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
---list "..\output\PIC18.map" -o ..\output\PIC18.axf
+--list "..\output\demo.map" -o ..\output\demo.axf

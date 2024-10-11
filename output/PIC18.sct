@@ -9,14 +9,16 @@ LR_IROM1 0x08000000 0x40000  {    ; load region size_region
    .ANY (+RO)
    .ANY (+XO)
   }
+  
+
+  MY_REGION+0{     ;自定义函数存储位置，地址及大小仅作说明
+   ;. = ALIGN(4);          
+;   *.o ("initcall."*)   
+   *(.initcall.*)
+  }
+  
   RW_IRAM1 0x20000000 0xC000  {  ; RW data
    .ANY (+RW +ZI)
   }
-
-;  MY_SECTION 0x24000000 0x100000
-;	{
-;		*(.MY_SECTION)
-;	}
-
 }
 

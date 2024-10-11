@@ -1195,7 +1195,7 @@ static void shellSetUser(Shell *shell, const ShellCommand *user)
 	if (user->data.user.password == NULL || strlen(user->data.user.password) == 0) {
 		shell->status.isChecked = 0;
 	} else if (shell->parser.paramCount < 1 || strcmp(user->data.user.password, shell->parser.param[1]) == 0){
-		shell->status.isChecked = 0;
+		shell->status.isChecked = 1; // no need pwd
 	} else{
 		shell->status.isChecked = 1;
 	}

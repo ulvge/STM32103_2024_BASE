@@ -29,6 +29,7 @@
 #include "print_monitor.h"
 #include "bsp_i2c.h"
 #include "I2CForward.h"
+#include "initcall.h"
 
 /* Private function prototypes -----------------------------------------------*/
 BaseType_t xHigherPriorityTaskWoken_YES = pdTRUE;
@@ -58,8 +59,10 @@ static const char *projectInfo =
 
 static void DebugConfig(void)
 {
-    //DBGMCU_CR_DBG_IWDG_STOP();
-    //DBGMCU_CR_DBG_WWDG_STOP();
+    __HAL_DBGMCU_FREEZE_IWDG();
+    __HAL_DBGMCU_FREEZE_WWDG();
+    __HAL_DBGMCU_FREEZE_TIM1();
+    __HAL_DBGMCU_FREEZE_TIM2();
 }
 
 /**
@@ -105,14 +108,16 @@ int main(void)
     LOG_RAW("%s", projectInfo); 
     DebugConfig();
     LOG_RAW("init other peripherals over\r\n");
+    LOG_RAW("system clock %d M\r\n", HAL_RCC_GetSysClockFreq()/1000000L);
     /* CmBacktrace initialize */
     cm_backtrace_init("CmBacktrace", HARDWARE_VERSION, SOFT_VERSION);
-
-    xTaskCreate(Task_I2cForWard, "forward", 128 * 4, NULL, 30, NULL );
+ 
+    AppCallInit(); 
+    //xTaskCreate(Task_I2cForWard, "forward", 128 * 4, NULL, 30, NULL );
     /* creation of uartMonitor */
-    xTaskCreate(Task_uartMonitor, "uartMonitor", 128 * 4, NULL, 24, &gp_xHandle_Task_uartMonitor );
+    xTaskCreate(Task_uartMonitor, "uartMonitor", 128 * 2, NULL, 24, &gp_xHandle_Task_uartMonitor );
     /* creation of shell */
-    //xTaskCreate(shellTask, "shell", 128 * 2, &shell, 16, &gp_xHandle_Task_shell );
+    xTaskCreate(shellTask, "shell", 128 * 2, &shell, 16, &gp_xHandle_Task_shell );
 
     LOG_I("create all task finished and succeed\r\n");
 

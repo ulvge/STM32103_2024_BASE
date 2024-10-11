@@ -5,6 +5,7 @@
 #include "bsp_gpio.h"
 #include "shell.h"
 #include "debug_print.h"
+#include "pwm.h"
 
 #define GPIO_GROUP_START  GPIO_DAC_A
 
@@ -17,6 +18,10 @@
 const static GPIO_InitTypeDef g_gpioConfigComm[] = {
     {GPIOA,  "SCL", GPIO_PIN_2, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
     {GPIOA,  "SDA", GPIO_PIN_3, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    {PWM_GPIO,  "PWMAF", PWM_PIN, GPIO_MODE_AF_PP, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    {PWM_GPIO,  "PWMPP", PWM_PIN, GPIO_MODE_OUTPUT_PP, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    {GPIOC,  "LED1", GPIO_PIN_2, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    {GPIOC,  "LED2", GPIO_PIN_3, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
 	
     //{GPIOB,  "SCL", GPIO_PIN_6, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
     //{GPIOB,  "SDA", GPIO_PIN_7, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
@@ -34,6 +39,17 @@ static void GPIO_InitGPIOs(const GPIO_InitTypeDef *config, uint32_t size)
 		uint32_t st = !p_gpioCfg->ActiveSignal;
         HAL_GPIO_WritePin(p_gpioCfg->PORT, p_gpioCfg->Pin, (GPIO_PinState)st);
     }
+}
+void GPIO_ReInitGPIO(GPIO_Idex idex)
+{
+    if (idex >= ARRARY_SIZE(g_gpioConfigComm))
+    {
+        return;
+    }
+    const GPIO_InitTypeDef *p_gpioCfg = &g_gpioConfigComm[idex];
+    HAL_GPIO_Init(p_gpioCfg->PORT, (GPIO_InitTypeDef *)p_gpioCfg);
+    uint32_t st = !p_gpioCfg->ActiveSignal;
+    HAL_GPIO_WritePin(p_gpioCfg->PORT, p_gpioCfg->Pin, (GPIO_PinState)st);
 }
 /**
  * @brief GPIO Initialization Function
