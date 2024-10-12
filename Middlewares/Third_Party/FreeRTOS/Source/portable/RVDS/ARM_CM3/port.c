@@ -419,7 +419,7 @@ void xPortSysTickHandler( void )
 	in place of portSET_INTERRUPT_MASK_FROM_ISR(). */
 	vPortRaiseBASEPRI();
 	{
-		time_update();
+		//time_update(); // SysTick_Handler中已经调用了HAL_IncTick
 		/* Increment the RTOS tick. */
 		if( xTaskIncrementTick() != pdFALSE )
 		{

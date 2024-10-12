@@ -218,15 +218,11 @@ void PrintTaskStackHead(void)
 }
 void vApplicationIdleHook( void )
 {
-    static bool isPrinted = false;
-    uint32_t tickNow = HAL_GetTick();
-    if (tickNow % 1000 == 0) {
-        if (!isPrinted) {
-            isPrinted = true;
-            //PrintTaskStackHead();
-        }
-    }else{
-        isPrinted = false;
+    static uint32_t lastTick = 0;
+    uint32_t nowTick = HAL_GetTick();
+    if (nowTick - lastTick >= 1000) {
+        lastTick = nowTick;
+        PrintTaskStackHead();
     }
 }
 void vPortSetupTimerInterrupt( void )
