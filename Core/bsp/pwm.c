@@ -17,6 +17,7 @@
 **
 *********************************************************************************************************/
 #include <stdlib.h>
+#include <stdint.h>
 #include "stm32f1xx.h"
 #include "debug_print.h"
 #include	"pwm.h"	
@@ -54,20 +55,21 @@
 //频率为1000HZ,即周期1ms，  TIM_Period = 1000
 //频率为2000HZ 即周期0.5ms，TIM_Period = 500
 #define PWM_WORK_FREQUENCY  1500
+#define PWM_INT_REPETNUMS  150  //多少次之后，才上报一次中断，避免频繁中断
 
 #define PWM_PRE_SCALE_DIV_1M   (SYS_CORE_CLOCK_X_MHZ)
 #define PWM_PRE_SCALE_DIV_1K  (SYS_CORE_CLOCK_X_KHZ)
 typedef struct {
 	INT32U	freMax;		           //当前预分频的最高支持的PWM频率
 	INT32U	preScale;              //预分频的值
-	INT16U	repetNums;              //预分频值
 	//设定分割频率，根据滤波系数决定的采样频率和N事件有利于滤除高频干扰信号
 	INT16U	clkDiv;               //和PWM死区信号有关 https://blog.csdn.net/yuyan7045/article/details/121289037?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.nonecase
     INT8U   polarity;
+	INT8U	repetNums;              //重复上报的值，宽度8bit
 }FrequecnyPreScale_ST;
 static const FrequecnyPreScale_ST g_tablePreScale[] = {
-	{100,			PWM_PRE_SCALE_DIV_1K, 0, TIM_CLOCKDIVISION_DIV1, TIM_OCPOLARITY_LOW},
-	{1000 * 1000,	PWM_PRE_SCALE_DIV_1M, PWM_WORK_FREQUENCY, TIM_CLOCKDIVISION_DIV1, TIM_OCPOLARITY_LOW},
+	{100,			PWM_PRE_SCALE_DIV_1K, TIM_CLOCKDIVISION_DIV1, TIM_OCPOLARITY_LOW, PWM_INT_REPETNUMS},
+	{1000 * 1000,	PWM_PRE_SCALE_DIV_1M, TIM_CLOCKDIVISION_DIV1, TIM_OCPOLARITY_LOW, PWM_INT_REPETNUMS},
 };
 
 typedef enum {
@@ -205,7 +207,7 @@ static void PWM_TIM1_Config(PWM_CFG* pwmConfig)
     __HAL_RCC_TIM1_CLK_ENABLE();
 
     TimHandle.Instance = PWM_TIM;
-    TimHandle.Init.Prescaler         = pwmConfig->pBestWorkMode->preScale - 1; ;
+    TimHandle.Init.Prescaler         = pwmConfig->pBestWorkMode->preScale - 1;
     TimHandle.Init.Period            = pwmConfig->Perio - 1;
     TimHandle.Init.ClockDivision     = pwmConfig->pBestWorkMode->clkDiv;
     TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
@@ -239,10 +241,17 @@ __attribute__((unused)) static void PWN_ITConfig(void)
 /// <param name=""></param>
 void TIM1_UP_IRQHandler(void)
 {
+    // PWM_INT_REPETNUMS 上报一次中断，interruptCount次中断后，才打印一次
+	#define interruptCount (PWM_WORK_FREQUENCY / (PWM_INT_REPETNUMS))
+	static INT32U count;
 	if (__HAL_TIM_GET_IT_SOURCE(&TimHandle, TIM_IT_UPDATE) != RESET) {//检查指定的TIM中断发生与否:TIM 中断源 
 		__HAL_TIM_CLEAR_IT(&TimHandle, TIM_IT_UPDATE);//清除TIMx的中断待处理位:TIM 中断源 
 	}
-    LOG_D("->: PWM work ...frequency[%d] \n", PWM_WORK_FREQUENCY);
+	count++;
+	if (count >= interruptCount) {
+		count = 0;
+        LOG_D("->: PWM work ...frequency[%d] \n", PWM_WORK_FREQUENCY);
+	}
 }
 static int pwmShellDuty(int argc, char *argv[])
 {

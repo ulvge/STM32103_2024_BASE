@@ -222,7 +222,7 @@ void vApplicationIdleHook( void )
     uint32_t nowTick = HAL_GetTick();
     if (nowTick - lastTick >= 1000) {
         lastTick = nowTick;
-        PrintTaskStackHead();
+        //PrintTaskStackHead();
     }
 }
 void vPortSetupTimerInterrupt( void )
