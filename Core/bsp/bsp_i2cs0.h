@@ -4,8 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define I2CS_WR 0 /* write ctrl bit */
-#define I2CS_RD 1 /* read ctrl bit */
 
 /********************* GPIO SIMULATED I2C1 MICRO DEF ***************************/
 #define I2CS0_SCL_GPIO_PORT     GPIOA

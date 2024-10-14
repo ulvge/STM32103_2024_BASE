@@ -12,6 +12,7 @@
 "..\output\pwm.o"
 "..\output\bsp_i2cs0.o"
 "..\output\bsp_i2ccomm.o"
+"..\output\bsp_i2cs1.o"
 "..\output\shell.o"
 "..\output\shell_ext.o"
 "..\output\shell_port.o"

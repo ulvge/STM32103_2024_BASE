@@ -19,8 +19,7 @@
 #define AT24C256         32767
 
 // ******************* 选择 bus *******************
-//#define  EEP_BUS I2C_BUS_1 // 开发板
-#define  EEP_BUS    I2C_BUS_S0 // printer
+#define  EEP_BUS    I2C_BUS_S1
 
 // ******************* 选择 型号 *******************
 /* 打印机使用的是 AT24C04 */

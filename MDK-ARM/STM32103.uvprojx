@@ -454,6 +454,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\bsp\bsp_i2ccomm.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_i2cs1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\bsp_i2cs1.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
