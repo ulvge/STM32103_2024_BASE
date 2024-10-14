@@ -323,7 +323,7 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>0</wLevel>
+            <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
             <uC99>1</uC99>
@@ -458,6 +458,16 @@
               <FileName>bsp_i2cs1.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\bsp\bsp_i2cs1.c</FilePath>
+            </File>
+            <File>
+              <FileName>dev_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\dev_fsm.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\bsp_key.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -18,6 +18,8 @@
 #include "debug_print.h"
 #include "stdlib.h" 
 #include "main.h" 
+#include "task.h"
+#include "print_monitor.h"
 
 static void parse_arguments(int argc, char **argv);
 
@@ -45,6 +47,7 @@ static void display_usage(void)
     LOG_RAW("\n*** gpio cmd index ***\r\n");
     LOG_RAW("\t-g: get the gpio is actived,eg: gpio -g 0\r\n");
     LOG_RAW("\t-s <active>:set the gpio active,eg: gpio -s 0 1\r\n");
+    vTaskDelay(UART_MONITOR_DELAY + 1);
     GPIO_printIdexAndName();
     return;
 }
@@ -86,14 +89,14 @@ static int getGPIOActive(int argc, char **argv, int index)
 {
     GPIO_Idex gpioIndex = (GPIO_Idex)atoi(argv[argc - 1]);
     GPIO_PinState config;
-    const char **name;
+    char *name;
     int res = GPIO_isPinActive(gpioIndex, &config);
-    GPIO_getPinName(gpioIndex, name);
+    GPIO_getPinName(gpioIndex, &name);
     if (res == -1) {
         LOG_RAW("gpio index = %d: get gpio error, check the input para\r\n", gpioIndex);
     }else{
         LOG_RAW("index ,    name,              config ActiveSignal,  is actived/val \r\n");
-        LOG_RAW("  %d,    %-20s,          %d,               %d\r\n", gpioIndex, *name, config, res);
+        LOG_RAW("  %d,    %-20s,          %d,               %d\r\n", gpioIndex, name, config, res);
     }
     return 0;
 }

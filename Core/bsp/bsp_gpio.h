@@ -9,72 +9,22 @@
 #include <stdbool.h>  
 #include "stm32f1xx.h"
 
-// #define PLUS_COUNT_PORT             GPIOA
-// #define PLUS_COUNT_PIN              GPIO_PIN_0
+// #define KEY0_PORT             GPIOA
+// #define KEY0_PIN              GPIO_PIN_0
 
-// #define BUSY_PORT                   GPIOA
-// #define BUSY_PIN                    GPIO_PIN_1
-
-// #define GLITCH_SHUTDOWN_PORT        GPIOA
-// #define GLITCH_SHUTDOWN_PIN         GPIO_PIN_10
-
-// #define SPOT_PORT                   GPIOB
-// #define SPOT_PIN                    GPIO_PIN_0
-
-// #define INTEGRATE_PORT              GPIOB
-// #define INTEGRATE_PIN               GPIO_PIN_1
-
-// #define POS_EQUALS_PORT             GPIOB
-// #define POS_EQUALS_PIN              GPIO_PIN_2
-
-// #define MATCH_PORT                  GPIOB
-// #define MATCH_PIN                   GPIO_PIN_10
-
-// #define LD_POS_PORT                 GPIOB
-// #define LD_POS_PIN                  GPIO_PIN_12
-
-// #define LD_SLOPE_PORT               GPIOB
-// #define LD_SLOPE_PIN                GPIO_PIN_14
-
-// #define RUN_LED_PORT                GPIOB
-// #define RUN_LED_PIN                 GPIO_PIN_15
-
-// #define PIC_LED_PORT                GPIOC
-// #define PIC_LED_PIN                 GPIO_PIN_0
-
-// #define INTRPT_PORT                 GPIOC
-// #define INTRPT_PIN                  GPIO_PIN_2
-
-// #define LD_MSLOPE_PORT              GPIOC
-// #define LD_MSLOPE_PIN               GPIO_PIN_3
-
-// #define DIRECTION_PORT              GPIOC
-// #define DIRECTION_PIN               GPIO_PIN_5
-
-// #define MCLR_PORT                   GPIOC
-// #define MCLR_PIN                    GPIO_PIN_13
-
-// #define XBEAM_PORT                   GPIOC
-// #define XBEAM_PIN                    GPIO_PIN_1
-
-
-/**SPI1 GPIO Configuration
-        PA4     ------> SPI1_NSS
-        PA5     ------> SPI1_SCK
-        PA6     ------> SPI1_MISO
-        PA7     ------> SPI1_MOSI
-        */
+// #define KEY1_PORT                   GPIOC
+// #define KEY1_PIN                    GPIO_PIN_13
  
-#define GPIO_SPI1_NSS                   GPIO_PIN_4  
-#define GPIO_SPI1_SCK                   GPIO_PIN_5
-#define GPIO_SPI1_MISO                  GPIO_PIN_6
-#define GPIO_SPI1_MOSI                  GPIO_PIN_7
-
-#define GPIO_SPI1_PORT                  GPIOA
 typedef enum
 {
-    GPIO_PWM_AF = 2U,
+    GPIO_SCL = 0U,
+    GPIO_SDA,
+    GPIO_PWM_AF,
     GPIO_PWM_PP,
+    GPIO_KEY1,
+    GPIO_KEY2,
+    GPIO_LED1,
+    GPIO_LED2,
     GPIO_MAX,
 } GPIO_Idex;
 
@@ -85,7 +35,7 @@ inline extern void GPIO_SetDAC(uint16_t val);
 void GPIO_printIdexAndName(void);
 int GPIO_isPinActive(GPIO_Idex idex, GPIO_PinState *config);
 bool GPIO_setPinStatus(GPIO_Idex idex, FunctionalState isActive, GPIO_PinState *config);
-bool GPIO_getPinName(GPIO_Idex idex, const char **name);
+bool GPIO_getPinName(GPIO_Idex idex, char **name);
 void GPIO_ReInitGPIO(GPIO_Idex idex);
 #ifdef __cplusplus
 }

@@ -1,3 +1,5 @@
-addr2line -e ..\..\..\..\projectGD32F103\output\temp\*.axf -a -f 
 
-addr2line -e ..\..\..\..\projectGD32F303\output\temp\*.axf -a -f 
+addr2line -e ..\..\..\..\output\temp\*.axf -a -f 
+
+
+Core\api\cm_backtrace\addr2line\win64\addr2line -e .\output\*.axf -a -f  08001336 08003d0c 08003c76 08003d96 08003158 080033f2 08003602 08003740 0800379c

@@ -20,6 +20,8 @@ const static GPIO_InitTypeDef g_gpioConfigComm[] = {
     {GPIOA,  "SDA", GPIO_PIN_3, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
     {PWM_GPIO,  "PWMAF", PWM_PIN, GPIO_MODE_AF_PP, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
     {PWM_GPIO,  "PWMPP", PWM_PIN, GPIO_MODE_OUTPUT_PP, GPIO_PULLUP, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
+    {GPIOA,  "KEY1", GPIO_PIN_0, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, GPIO_PIN_SET},
+    {GPIOC,  "KEY2", GPIO_PIN_13, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_LOW, GPIO_PIN_SET},
     {GPIOC,  "LED1", GPIO_PIN_2, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
     {GPIOC,  "LED2", GPIO_PIN_3, GPIO_MODE_INPUT, GPIO_NOPULL, GPIO_SPEED_FREQ_HIGH, GPIO_PIN_RESET},
 
@@ -98,13 +100,15 @@ int GPIO_isPinActive(GPIO_Idex idex, GPIO_PinState *config)
     return 0;
 }
 
-bool GPIO_getPinName(GPIO_Idex idex, const char **name)
+bool GPIO_getPinName(GPIO_Idex idex, char **name)
 {
     if (idex >= ARRARY_SIZE(g_gpioConfigComm))
     {
         return false;
     }
-    *name = g_gpioConfigComm[idex].Name;
+    
+    const GPIO_InitTypeDef *p_gpioCfg = &g_gpioConfigComm[idex];
+    *name = p_gpioCfg->Name;
     return true;
 }
 void GPIO_printIdexAndName(void)
