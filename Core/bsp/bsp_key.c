@@ -48,13 +48,15 @@ static Key_ScanST g_key1 = {
 static void DevTaskHandler(void *pArg)
 {
     char *key1Name;
+    FunctionalState state;
     while (1)
     {
         vTaskDelay(DEV_TASK_DELAY_XMS);
         KeyPressedDurationMs(&g_key1);
 
         if (g_key1.isReleased) {
-            GPIO_setPinStatus(GPIO_LED2, ENABLE, NULL);
+            state = (FunctionalState)!state;
+            GPIO_setPinStatus(GPIO_LED2, state, NULL);
             if (GPIO_getPinName(g_key1.pin, &key1Name)){
                 LOG_I("key %s pressed\r\n", key1Name);
             }

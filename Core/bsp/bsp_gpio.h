@@ -17,8 +17,6 @@
  
 typedef enum
 {
-    GPIO_SCL = 0U,
-    GPIO_SDA,
     GPIO_PWM_AF,
     GPIO_PWM_PP,
     GPIO_KEY1,
