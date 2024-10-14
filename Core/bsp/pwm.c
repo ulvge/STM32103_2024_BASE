@@ -250,7 +250,7 @@ void TIM1_UP_IRQHandler(void)
 	count++;
 	if (count >= interruptCount) {
 		count = 0;
-        LOG_D("->: PWM work ...frequency[%d] \n", PWM_WORK_FREQUENCY);
+        //LOG_D("->: PWM work ...frequency[%d] \n", PWM_WORK_FREQUENCY);
 	}
 }
 static int pwmShellDuty(int argc, char *argv[])

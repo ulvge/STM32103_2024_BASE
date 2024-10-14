@@ -404,6 +404,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\api\I2CForward.c</FilePath>
             </File>
+            <File>
+              <FileName>eeprom.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\api\eeprom.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -438,6 +443,16 @@
               <FileName>pwm.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\bsp\pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_i2cs0.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\bsp_i2cs0.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_i2ccomm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\bsp_i2ccomm.c</FilePath>
             </File>
           </Files>
         </Group>
