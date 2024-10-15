@@ -16,17 +16,17 @@
 ** Descriptions       :
 **
 *********************************************************************************************************/
-#include <stdlib.h>
-#include <stdint.h>
-#include "stm32f1xx.h"
-#include "debug_print.h"
-#include	"pwm.h"	
-#include	"main.h"
-#include	"initcall.h"
-#include "shell.h"
+#include "pwm.h"
 #include "FreeRTOS.h"
-#include "task.h"
 #include "bsp_gpio.h"
+#include "debug_print.h"
+#include "initcall.h"
+#include "main.h"
+#include "shell.h"
+#include "stm32f1xx.h"
+#include "task.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 /****************************************************************
  * 函数名：void GPIO_Config(void) 

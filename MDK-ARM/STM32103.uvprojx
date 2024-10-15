@@ -409,6 +409,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\api\eeprom.c</FilePath>
             </File>
+            <File>
+              <FileName>TemperatureInside.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\api\TemperatureInside.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -703,6 +708,16 @@
               <FileName>stm32f1xx_hal_rtc_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rtc_ex.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f1xx_hal_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f1xx_hal_adc_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_adc_ex.c</FilePath>
             </File>
           </Files>
         </Group>

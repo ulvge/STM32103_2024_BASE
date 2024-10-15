@@ -4,6 +4,7 @@
 "..\output\print_monitor.o"
 "..\output\i2cforward.o"
 "..\output\eeprom.o"
+"..\output\temperatureinside.o"
 "..\output\bsp_uartcomm.o"
 "..\output\bsp_gpio.o"
 "..\output\bsp_usart1.o"
@@ -55,6 +56,8 @@
 "..\output\stm32f1xx_hal_rcc_ex.o"
 "..\output\stm32f1xx_hal_i2c.o"
 "..\output\stm32f1xx_hal_rtc_ex.o"
+"..\output\stm32f1xx_hal_adc.o"
+"..\output\stm32f1xx_hal_adc_ex.o"
 --library_type=microlib --strict --scatter "..\output\PIC18.sct"
 --keep=*.o(*initcall*) --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

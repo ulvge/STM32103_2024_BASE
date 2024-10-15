@@ -98,7 +98,8 @@ typedef unsigned char  BOOLEAN;
 
 //#define int8 INT8S
 #define int16 INT16S
-//#define int32 INT32S
+#define int32 INT32S
+#define INT32 INT32S
 //#define int64 INT64S
 
 #define UINT8 INT8U
