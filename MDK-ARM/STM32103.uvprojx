@@ -495,14 +495,14 @@
               <FilePath>..\Core\api\shell\shell_port.c</FilePath>
             </File>
             <File>
-              <FileName>gpio_shell.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\api\shell\gpio_shell.c</FilePath>
-            </File>
-            <File>
               <FileName>shell_cmd_list.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\api\shell\shell_cmd_list.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio_shell.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\api\gpio_shell.c</FilePath>
             </File>
           </Files>
         </Group>

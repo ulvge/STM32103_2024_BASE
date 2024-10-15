@@ -748,7 +748,7 @@ void shellInsertByte(Shell *shell, char data)
     if (shell->parser.cursor == shell->parser.length)
     {
 		// 在命令起始位置，不插入特殊字符
-		if ((shell->parser.length == 0) && ((data == KEY_CR) || (data == KEY_LF))) {
+		if ((shell->parser.length == 0) && (data < KEY_SPACE)) {
 			return;
 		}
         shell->parser.buffer[shell->parser.length++] = data;
@@ -1385,6 +1385,13 @@ void shellUp(Shell *shell)
 }
 SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0), 0x1B5B4100, shellUp, up);
 
+void shellCtrlC(Shell *shell) 
+{
+    shell->parser.length = 0;
+    shell->parser.cursor = 0;
+    shellWriteCommandLine(shell, 1);
+}
+SHELL_EXPORT_KEY(SHELL_CMD_PERMISSION(0), 0x03000000, shellCtrlC, ctrlC);
 
 /**
  * @brief shell下方向键输入

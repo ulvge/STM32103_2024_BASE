@@ -20,7 +20,7 @@ UART_HandleTypeDef g_uart1Handle = {
 UART_PARA_STRUCT g_UARTPara = {
     .periph = USART1,
     .uartHandle = &g_uart1Handle,
-    .dmaUsed = true,
+    .dmaUsed = false,
     .dmaBusy = false,
 };
 
@@ -69,7 +69,11 @@ __weak void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
-    UART_sendContinueIT(g_UARTPara.periph, &g_UARTPara.fifo);
+    if (!FIFO_Empty(&g_UARTPara.fifo.sfifo)){
+        PrintMonitor_PostdMsg(g_UARTPara.periph, false);
+    }else{
+        g_UARTPara.fifo.status &= ~UART_SENDING;
+    }
 }
 
 /**

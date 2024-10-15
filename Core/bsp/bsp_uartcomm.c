@@ -171,14 +171,13 @@ void UART_sendContinueDMA(USART_TypeDef * usart_periph)
     }else{
         sendSize = fifo->limit - fifo->rp;
     }
-	API_ExitCirtical(x);
 
     /* wait DMA channel transfer complete */
     if(HAL_UART_Transmit_DMA(uartPara->uartHandle, fifo->rp, sendSize)!= HAL_OK)
     {
+	    API_ExitCirtical(x);
         PrintMonitor_PostdMsg(usart_periph, true); // Send it later
     }else{
-        uint32_t x=API_EnterCirtical();
         fifo->occupy -= sendSize;
         if (isNotTail) {
             fifo->rp += sendSize;
