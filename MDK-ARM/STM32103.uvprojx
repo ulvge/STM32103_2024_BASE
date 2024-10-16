@@ -484,6 +484,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\bsp\bsp_wdg.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\bsp_rtc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
