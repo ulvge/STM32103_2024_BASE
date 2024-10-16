@@ -7,6 +7,7 @@
 	 
 #include <stdbool.h>
 #include <stdint.h>
+#include "stm32f1xx.h"
 
 enum {
     SECS_PER_DAY = 86400,
@@ -18,8 +19,6 @@ enum {
     TIME_T_MAX = 2145916799,  // int maximum 2037-12-31T23:59:59 UTC
     JULIAN_DAY_FOR_EPOCH = 2440588 // result of julianDayFromDate(1970, 1, 1)
 };
-
-
 
 typedef struct {
 	
@@ -35,7 +34,8 @@ typedef struct {
 
 int split(char* src, const char* sp, char** dest);
 uint64_t currentSecsSinceEpoch(char* date, char* time);
-
+void RTC_Init(void);
+void RTC_GetDate(RTC_TimeTypeDef *time, uint32_t Format);
 #ifdef __cplusplus
 }
 #endif
