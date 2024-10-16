@@ -58,7 +58,6 @@ extern int g_debugLevel;
 /* Exported functions prototypes ---------------------------------------------*/
 extern void Error_Handler(void);
 
-extern uint32_t g_resetCause;
 /* USER CODE BEGIN EFP */
 
 #define SYS_CORE_CLOCK        72000000L  //并不真正起效，只是别处会调用这个值
