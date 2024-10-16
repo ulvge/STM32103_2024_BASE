@@ -30,6 +30,7 @@
 #include "bsp_i2c.h"
 #include "I2CForward.h"
 #include "initcall.h"
+#include "stm32f1xx_hal.h"
 
 /* Private function prototypes -----------------------------------------------*/
 BaseType_t xHigherPriorityTaskWoken_YES = pdTRUE;
@@ -83,7 +84,44 @@ static void MX_DMA_Init(void)
     HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, IRQHANDLER_PRIORITY_UART_DMA, 0);
     HAL_NVIC_EnableIRQ(DMA1_Channel6_IRQn);
 }
+IWDG_HandleTypeDef IwdgHandle;
+__attribute__((unused)) static void WatchDog_init()
+{
+    // 时间计算(大概):Tout= IWDG_PRESCALER_128  350  = 1s
+    IwdgHandle.Instance = IWDG;
+    IwdgHandle.Init.Prescaler = IWDG_PRESCALER_128;
+    IwdgHandle.Init.Reload    = 350;
 
+    if (HAL_IWDG_Init(&IwdgHandle) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+__attribute__((unused)) uint32_t g_resetCause;
+__attribute__((unused)) static uint32_t Recordg_resetCause()
+{
+    /* check if the system has resumed from a specific reset */
+    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) {
+        g_resetCause = RCC_FLAG_IWDGRST;  // 独立看门狗复位
+    } else if (__HAL_RCC_GET_FLAG(RCC_FLAG_WWDGRST)) {
+        g_resetCause = RCC_FLAG_WWDGRST;  // 窗口看门狗复位
+    } else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST)) {
+        g_resetCause = RCC_FLAG_PORRST;  // 上电复位
+    } else if (__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST)) {
+        g_resetCause = RCC_FLAG_SFTRST;  // 软件复位
+    } else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST)) {
+        g_resetCause = RCC_FLAG_PINRST;  // 外部引脚复位
+    } else if (__HAL_RCC_GET_FLAG(RCC_FLAG_LPWRRST)) {
+        g_resetCause = RCC_FLAG_LPWRRST;  // 低功耗复位
+    } else {
+        g_resetCause = 0;  // 没有找到匹配的复位原因
+    }
+
+    /* 复位标志清除，防止下一次复位时状态混乱 */
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+    return g_resetCause;
+}
 
 /**
  * @brief  The application entry point.
@@ -101,6 +139,8 @@ int main(void)
     /* Initialize all configured peripherals */
     GPIO_Init();
     MX_DMA_Init();
+    WatchDog_init();
+    g_resetCause = Recordg_resetCause();
 
     i2c_int();
     UART_init();
@@ -147,6 +187,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
@@ -170,6 +211,7 @@ void SystemClock_Config(void)
   }
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
   PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV2;
+  PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
@@ -231,6 +273,7 @@ void vApplicationIdleHook( void )
         lastTick = nowTick;
         //PrintTaskStackHead();
     }
+    //HAL_IWDG_Refresh(&IwdgHandle);
 }
 void vPortSetupTimerInterrupt( void )
 {

@@ -45,7 +45,7 @@ static Key_ScanST g_key1 = {
 //    .pin = GPIO_KEY2
 //};
 #define DEV_TASK_DELAY_XMS  10
-static void DevTaskHandler(void *pArg)
+static void KeyTaskHandler(void *pArg)
 {
     char *key1Name;
     FunctionalState state;
@@ -66,7 +66,7 @@ static void DevTaskHandler(void *pArg)
 
 static void Key_init(void)
 {
-    xTaskCreate(DevTaskHandler, "DevTask", 128 * 4, NULL, 10, NULL);
+    xTaskCreate(KeyTaskHandler, "DevTask", 128 * 4, NULL, 10, NULL);
 }
 
 
