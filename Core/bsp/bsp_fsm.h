@@ -1,5 +1,5 @@
-#ifndef __DEV_FSM_H
-#define __DEV_FSM_H
+#ifndef __BSP_FSM_H
+#define __BSP_FSM_H
 
 #ifdef __cplusplus
 extern "C" {

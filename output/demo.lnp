@@ -16,6 +16,9 @@
 "..\output\bsp_i2cs1.o"
 "..\output\dev_fsm.o"
 "..\output\bsp_key.o"
+"..\output\tm1637.o"
+"..\output\bsp_wdg.o"
+"..\output\bsp_rtc.o"
 "..\output\shell.o"
 "..\output\shell_ext.o"
 "..\output\shell_port.o"
@@ -58,6 +61,7 @@
 "..\output\stm32f1xx_hal_rtc_ex.o"
 "..\output\stm32f1xx_hal_adc.o"
 "..\output\stm32f1xx_hal_adc_ex.o"
+"..\output\stm32f1xx_hal_iwdg.o"
 --library_type=microlib --strict --scatter "..\output\PIC18.sct"
 --keep=*.o(*initcall*) --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
