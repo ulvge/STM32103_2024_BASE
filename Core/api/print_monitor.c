@@ -1,7 +1,7 @@
 #include <string.h>  
 #include <stdlib.h>
-#include <main.h>
 #include "FreeRTOS.h"
+#include <main.h>
 #include "debug_print.h"
 #include "print_monitor.h"
 #include "bsp_uartcomm.h"
@@ -14,7 +14,7 @@ typedef struct
 
 void PrintMonitorInit(void)
 {
-    g_Queue_uartResend = xQueueCreate(1, sizeof(MsgUartResend_T));
+    g_Queue_uartResend = xQueueCreate(2, sizeof(MsgUartResend_T));
 }
 void Task_uartMonitor(void *param)
 {
@@ -33,7 +33,7 @@ void Task_uartMonitor(void *param)
 #define UART_RESEND_MAX_COUNT 2
 void PrintMonitor_PostdMsg(USART_TypeDef * usart_periph, bool isReSend)
 {
-    uint32_t errCount = 0;
+    static uint32_t errCount = 0;
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     MsgUartResend_T msg;
     BaseType_t err;
@@ -61,7 +61,7 @@ void PrintMonitor_PostdMsg(USART_TypeDef * usart_periph, bool isReSend)
     if (vPortGetIPSR()) {
         err = xQueueSendFromISR(g_Queue_uartResend, (char*)&msg, &xHigherPriorityTaskWoken);
     }else {
-        err = xQueueSend(g_Queue_uartResend, (char*)&msg, 10);
+        err = xQueueSend(g_Queue_uartResend, (char*)&msg, 0);
     }
     if (err == pdFAIL)
     {

@@ -20,7 +20,7 @@ UART_HandleTypeDef g_uart1Handle = {
 UART_PARA_STRUCT g_UARTPara = {
     .periph = USART1,
     .uartHandle = &g_uart1Handle,
-    .dmaUsed = false,
+    .dmaUsed = true,
     .dmaBusy = false,
 };
 

@@ -153,7 +153,40 @@
           <Name>UL2CM3(-S0 -C0 -P0 ) -FN1 -FC1000 -FD20000000 -FF0STM32F10x_512 -FL080000 -FS08000000 -FP0($$Device:STM32F103RC$Flash\STM32F10x_512.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>3144</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134282548</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_uart.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\demo\../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c\3144</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>3104</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134282864</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>..\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_uart.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\demo\../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c\3104</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -174,6 +207,11 @@
           <count>3</count>
           <WinNumber>1</WinNumber>
           <ItemText>*(const uint32_t *)tmp</ItemText>
+        </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>*data</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
@@ -228,10 +266,6 @@
       <pMultCmdsp></pMultCmdsp>
       <SystemViewers>
         <Entry>
-          <Name>System Viewer\ADC1</Name>
-          <WinId>35902</WinId>
-        </Entry>
-        <Entry>
           <Name>System Viewer\DMA1</Name>
           <WinId>35901</WinId>
         </Entry>
@@ -242,6 +276,10 @@
         <Entry>
           <Name>System Viewer\TIM1</Name>
           <WinId>35905</WinId>
+        </Entry>
+        <Entry>
+          <Name>System Viewer\USART1</Name>
+          <WinId>35902</WinId>
         </Entry>
       </SystemViewers>
       <DebugDescription>

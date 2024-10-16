@@ -324,7 +324,7 @@ static void shellWriteCommandLine(Shell *shell, unsigned char newline)
     {
         if (newline)
         {
-            shellWriteString(shell, "\r\n");
+            shellWriteString(shell, " \r\n");
         }
         shellWriteString(shell, shell->info.user->data.user.name);
         shellWriteString(shell, ":");
