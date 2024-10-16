@@ -5,7 +5,7 @@
 #include "Types.h"
 #include "debug_print.h"
 #include "bsp_gpio.h"
-#include "dev_fsm.h"
+#include "bsp_fsm.h"
 
 static const FSM_StateTransform *fsm_findTrans(FSM_StateMachine *pSM, const FSM_EventID evt)
 {

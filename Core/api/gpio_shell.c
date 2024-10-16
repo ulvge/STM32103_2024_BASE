@@ -87,6 +87,10 @@ static void parse_arguments(int argc, char **argv)
 }
 static int getGPIOActive(int argc, char **argv, int index)
 {
+    if (argc != 3){
+        display_usage();
+        return 0;
+    }
     GPIO_Idex gpioIndex = (GPIO_Idex)atoi(argv[argc - 1]);
     GPIO_PinState config;
     char *name;
@@ -102,7 +106,11 @@ static int getGPIOActive(int argc, char **argv, int index)
 }
 static int setGPIOActiveHandler(int argc, char **argv, int index)
 {
-    GPIO_Idex gpioIndex = (GPIO_Idex)atoi(argv[argc - 1]);
+    if (argc != 4){
+        display_usage();
+        return 0;
+    }
+    GPIO_Idex gpioIndex = (GPIO_Idex)atoi(argv[argc - 2]);
     FunctionalState isActive = (FunctionalState)atoi(argv[argc - 1]);
     GPIO_PinState config;
     if (!GPIO_setPinStatus(gpioIndex, isActive, &config)) {

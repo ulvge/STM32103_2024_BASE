@@ -465,11 +465,6 @@
               <FilePath>..\Core\bsp\bsp_i2cs1.c</FilePath>
             </File>
             <File>
-              <FileName>dev_fsm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\bsp\dev_fsm.c</FilePath>
-            </File>
-            <File>
               <FileName>bsp_key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\bsp\bsp_key.c</FilePath>
@@ -488,6 +483,11 @@
               <FileName>bsp_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\bsp\bsp_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\bsp\bsp_fsm.c</FilePath>
             </File>
           </Files>
         </Group>
