@@ -9,6 +9,8 @@
 #include "initcall.h"
 
 static RTC_HandleTypeDef g_hrtc;
+
+extern void RTC_enableIT(RTC_HandleTypeDef *hrtc);
 /**
  * @brief RTC Initialization Function
  * @param None
@@ -46,6 +48,7 @@ void RTC_Init(void)
         HAL_RTC_SetTime(&g_hrtc, &sTime, RTC_FORMAT_BCD); // 设置时间
         __HAL_RTC_WRITEPROTECTION_ENABLE(&g_hrtc); // 重新启用写入保护
     }
+    RTC_enableIT(&g_hrtc);
 }
 /**
  * @brief RTC MSP Initialization

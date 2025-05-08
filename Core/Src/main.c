@@ -215,7 +215,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 void PrintTaskStackHead(void)
 {
-    TaskHandle_t taskHandle[3] = {gp_xHandle_Task_uartMonitor, gp_xHandle_Task_shell};
+    TaskHandle_t taskHandle[] = {gp_xHandle_Task_uartMonitor, gp_xHandle_Task_shell};
     uint32_t taskStackWaterMark;
 
     LOG_D("\r\n");

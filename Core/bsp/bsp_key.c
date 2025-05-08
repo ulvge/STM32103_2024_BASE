@@ -7,6 +7,7 @@
 #include "task.h"
 #include "FreeRTOS.h"
 #include "initcall.h"
+#include "alarm.h"
 
 /// @brief count pluse ms of the pin
 /// @return The duration of the key pressed
@@ -37,33 +38,63 @@ UINT32 KeyPressedDurationMs(Key_ScanST *key)
     }
 }
 
-
-static Key_ScanST g_key1 = {
-    .pin = GPIO_KEY1
-}; 
-//static Key_ScanST g_key2= {
-//    .pin = GPIO_KEY2
-//};
+static Key_ScanST g_keyConfig[] = {
+    {.pin = GPIO_KEY1},
+    {.pin = GPIO_KEY2},
+};
 #define DEV_TASK_DELAY_XMS  10
 static void KeyTaskHandler(void *pArg)
 {
-    char *key1Name;
-    FunctionalState state;
+    char *keyName;
     while (1)
     {
         vTaskDelay(DEV_TASK_DELAY_XMS);
-        KeyPressedDurationMs(&g_key1);
-
-        if (g_key1.isReleased) {
-            state = (FunctionalState)!state;
-            GPIO_setPinStatus(GPIO_LED2, state, NULL);
-            if (GPIO_getPinName(g_key1.pin, &key1Name)){
-                LOG_I("key %s pressed\r\n", key1Name);
+        for (UINT8 i = 0; i < ARRARY_SIZE(g_keyConfig);  i++) {
+            Key_ScanST *key = &g_keyConfig[i];
+            KeyPressedDurationMs(key);
+            if (key->isPreesed) {
+                if (GPIO_getPinName(key->pin, &keyName)){
+                    LOG_I("key %s pressed\r\n", keyName);
+                }
+                if (key->onPressed){
+                    key->onPressed();
+                }
+            }
+            if (key->isReleased) {
+                if (GPIO_getPinName(key->pin, &keyName)){
+                    LOG_I("key %s released\r\n", keyName);
+                }
+                if (key->onReleased){
+                    key->onReleased();
+                }
             }
         }
     }
 }
-
+bool key_handlerRegister(GPIO_Idex idx, KeyPressedHandler onPressed, KeyReleasedHandler onReleased)
+{
+    for (UINT8 i = 0; i < ARRARY_SIZE(g_keyConfig);  i++) {
+        Key_ScanST *key = &g_keyConfig[i];
+        if (key->pin == idx) {
+            key->onPressed = onPressed;
+            key->onReleased = onReleased;
+            return true;
+        }
+    }
+    return false;
+}
+bool key_handlerUnRegister(GPIO_Idex idx)
+{
+    for (UINT8 i = 0; i < ARRARY_SIZE(g_keyConfig);  i++) {
+        Key_ScanST *key = &g_keyConfig[i];
+        if (key->pin == idx) {
+            key->onPressed = NULL;
+            key->onReleased = NULL;
+            return true;
+        }
+    }
+    return false;
+}
 static void Key_init(void)
 {
     xTaskCreate(KeyTaskHandler, "DevTask", 128 * 4, NULL, 10, NULL);

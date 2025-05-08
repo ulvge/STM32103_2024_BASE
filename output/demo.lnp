@@ -5,6 +5,7 @@
 "..\output\i2cforward.o"
 "..\output\eeprom.o"
 "..\output\temperatureinside.o"
+"..\output\alarm.o"
 "..\output\bsp_uartcomm.o"
 "..\output\bsp_gpio.o"
 "..\output\bsp_usart1.o"

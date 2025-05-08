@@ -27,6 +27,9 @@
 void PWM_DutyChange(BOOLEAN isAdd);
 void TIM1_UP_IRQHandler(void);
 
+int PWMStartHandler(int argc, char *argv[], int index);
+int PWMStopHandler(int argc, char *argv[], int index);
+
 #endif  
 
 

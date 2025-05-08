@@ -414,6 +414,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\api\TemperatureInside.c</FilePath>
             </File>
+            <File>
+              <FileName>alarm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\api\alarm.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

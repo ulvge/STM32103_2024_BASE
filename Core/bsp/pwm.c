@@ -27,6 +27,7 @@
 #include "task.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 /****************************************************************
  * 函数名：void GPIO_Config(void) 
@@ -183,24 +184,24 @@ static INT16U  PWM_calcDutyByPercent(INT8U dutyPercent)
 	pluseNum = PwmCfg.Perio * dutyPercent / 100;
 	return pluseNum;
 }          
-static INT16U dutyPercent = PWM_PERCNET_DEFAULT;
+static INT16U g_dutyPercent = PWM_PERCNET_DEFAULT;
 void PWM_DutyChange(BOOLEAN isAdd)
 {              
 	if (isAdd) {
-		if (dutyPercent + PwmCfg.Resolution < 100) {
-			dutyPercent += PwmCfg.Resolution;
+		if (g_dutyPercent + PwmCfg.Resolution < 100) {
+			g_dutyPercent += PwmCfg.Resolution;
 		}else{
-            dutyPercent = 100;
+            g_dutyPercent = 100;
         }
 	} else {
-		if (dutyPercent >= PwmCfg.Resolution) {
-			dutyPercent -= PwmCfg.Resolution;
+		if (g_dutyPercent >= PwmCfg.Resolution) {
+			g_dutyPercent -= PwmCfg.Resolution;
 		} else{
-            dutyPercent = 0;
+            g_dutyPercent = 0;
         }
 	} 
-	LOG_D("->: PWM DutyChange [%d]\n", dutyPercent); 
-    PWM_SetDuty(PWM_TIM, PWM_PIN, PWM_calcDutyByPercent(dutyPercent));
+	LOG_D("->: PWM DutyChange [%d]\n", g_dutyPercent); 
+    PWM_SetDuty(PWM_TIM, PWM_PIN, PWM_calcDutyByPercent(g_dutyPercent));
 }
 static void PWM_TIM1_Config(PWM_CFG* pwmConfig)
 {
@@ -253,10 +254,43 @@ void TIM1_UP_IRQHandler(void)
         //LOG_D("->: PWM work ...frequency[%d] \n", PWM_WORK_FREQUENCY);
 	}
 }
-static int pwmShellDuty(int argc, char *argv[])
+// PWM shell
+
+static int PWMSetDutyHandler(int argc, char *argv[], int index);
+static int PWMGetDutyHandler(int argc, char *argv[], int index);
+static void display_usage(void);
+static int (*const handlerList[])(int, char **, int) =  {
+    PWMStartHandler,
+    PWMStopHandler,
+    PWMSetDutyHandler,
+    PWMGetDutyHandler,
+    NULL
+};
+
+static char *const arglist[] = {
+    "-start",
+    "-stop",
+    "-set",
+    "-get",
+    NULL
+};
+
+int PWMStartHandler(int argc, char *argv[], int index)
+{
+	PWM_SetDuty(PWM_TIM, PWM_PIN, PWM_calcDutyByPercent(g_dutyPercent));
+    LOG_RAW("PWM enable\r\n");
+    return 0;
+}
+int PWMStopHandler(int argc, char *argv[], int index)
+{
+	PWM_SetDuty(PWM_TIM, PWM_PIN, 0);
+    LOG_RAW("PWM disable\r\n");
+    return 0;
+}
+static int PWMSetDutyHandler(int argc, char *argv[], int index)
 {
     if (argc !=2) {
-        LOG_RAW("pwm 30, set duty = 30\n");
+        display_usage();
         return 0;
     }
     
@@ -264,7 +298,64 @@ static int pwmShellDuty(int argc, char *argv[])
     if (dutyPercent > 100) {
         dutyPercent = 100;
     }
-    PWM_SetDuty(PWM_TIM, PWM_PIN, PWM_calcDutyByPercent(dutyPercent));  
+    g_dutyPercent = dutyPercent;
+    PWM_SetDuty(PWM_TIM, PWM_PIN, PWM_calcDutyByPercent(dutyPercent)); 
+    LOG_RAW("PWM Duty success: %d\r\n", dutyPercent);
+    return 0;
+}
+static int PWMGetDutyHandler(int argc, char *argv[], int index)
+{
+    LOG_RAW("PWM Duty: %d\r\n", g_dutyPercent);
+    return 0;
+}
+static void display_usage(void)
+{
+    LOG_RAW("\t\t PWM \r\n");
+    LOG_RAW("Usage: get or set pwm duty  <arguments>\r\n");
+    LOG_RAW("Arguments:\r\n");
+
+    LOG_RAW("\t-g: get pwm: pwm -get\r\n");
+    LOG_RAW("\t-g: set pwm dudy 50: pwm -set 50\r\n");
+    LOG_RAW("\t-g: start pwm: pwm -en\r\n");
+    LOG_RAW("\t-g: stop pwm: pwm -dis\r\n");
+    return;
+}
+static void parse_arguments(int argc, char **argv)
+{
+    int i, j;
+
+    if (argc <= 1)
+    {
+        display_usage();
+        return;
+    }
+
+    for (i = 1; i < argc; i++)
+    {
+        j = 0;
+        while (arglist[j] != NULL)
+        {
+            if (strcmp(argv[i], arglist[j]) == 0)
+            {
+                int retval;
+
+                /* Match!  Handle this argument (and skip the specified
+                   number of arguments that were just handled) */
+                retval = handlerList[j](argc, argv, i);
+                if (retval >= 0)
+                    i += retval;
+                else
+                {
+                    LOG_E("Cannot handle argument: %s\r\n", arglist[j]);
+                }
+            }
+            j++;
+        }
+    }
+}
+static int pwmShellDuty(int argc, char *argv[])
+{
+    parse_arguments(argc, argv); 
     return 0;
 }
 static void PWM_Init(void)
