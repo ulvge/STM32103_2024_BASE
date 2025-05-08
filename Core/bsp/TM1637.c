@@ -1,6 +1,4 @@
 
-#define GLOBALS_TM1637_DRV
-
 #include <stdint.h>
 #include <stdlib.h>
 #include "stm32f1xx.h"
@@ -288,8 +286,11 @@ void TM1637_DisplayVal(TM1637_DISPLAY_TYPE type, INT32U val, INT32U dlyMs)
     g_dispPara.type = type;
     TM1637_CMDDisplay(&g_dispPara.context, g_dispPara.type);
 }
+/// @brief 显示时间的时候，可以临时显示其他内容，显示完之后，再显示时间
+/// @param  
 static void TM1637_DisplayTime(void)
 {
+    static bool isDisplayMinSec = true; // true:显示分秒，false:显示时分
     if (g_dispPara.lastTimeRefreshCycle > 0) {
         g_dispPara.lastTimeRefreshCycle--;
         if (g_dispPara.lastTimeRefreshCycle == 0) {
@@ -299,10 +300,18 @@ static void TM1637_DisplayTime(void)
     if (g_dispPara.type == DISPLAY_TYPE_TIME) {
         RTC_TimeTypeDef systime;
         RTC_GetDate(&systime, RTC_FORMAT_BIN);
-        g_dispPara.context.hour.shi = systime.Minutes / 10;
-        g_dispPara.context.hour.ge = systime.Minutes % 10;
-        g_dispPara.context.min.shi = systime.Seconds / 10;
-        g_dispPara.context.min.ge = systime.Seconds % 10;
+        if (isDisplayMinSec) {
+            g_dispPara.context.hour.shi = systime.Minutes / 10;
+            g_dispPara.context.hour.ge = systime.Minutes % 10;
+            g_dispPara.context.min.shi = systime.Seconds / 10;
+            g_dispPara.context.min.ge = systime.Seconds % 10;
+        } else {
+            g_dispPara.context.hour.shi = systime.Hours / 10;
+            g_dispPara.context.hour.ge = systime.Hours % 10;
+            g_dispPara.context.min.shi = systime.Minutes / 10;
+            g_dispPara.context.min.ge = systime.Minutes % 10;
+        }
+        isDisplayMinSec = !isDisplayMinSec;
     }
     TM1637_CMDDisplay(&g_dispPara.context, g_dispPara.type);
 }

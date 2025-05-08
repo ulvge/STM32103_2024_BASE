@@ -189,6 +189,8 @@ void RTC_enableIT(RTC_HandleTypeDef *hrtc)
     /* 6. 重新启用写入保护 */
     __HAL_RTC_WRITEPROTECTION_ENABLE(hrtc);
 }
+/// @brief 闹钟任务,如果闹钟时间到了，则启动PWM，并等待按键按下，或者超时
+/// @param param 
 void Alarm_Task(void *param)
 {
     int alarmCount; 
@@ -226,16 +228,20 @@ void Alarm_Task(void *param)
         PWMStopHandler(0, NULL, 0);
     }
 }
-
+/// @brief RTC Alarm中断回调函数
+/// @param hrtc 
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc)
 {
     xSemaphoreGiveFromISR(semaphoreNeedAlarm, NULL);
 }
-
+/// @brief 按键回调函数，用于停止闹钟
+/// @param  
 void Alarm_keyCallBackStopAlarm(void)
 {
     xSemaphoreGive(semaphoreStopAlarm);
 }
+/// @brief 注册 闹钟任务 和 按键回调函数
+/// @param  
 static void Alarm_init(void)
 {
     xTaskCreate(Alarm_Task, "Alarm", 128 * 2, NULL, 25, NULL);

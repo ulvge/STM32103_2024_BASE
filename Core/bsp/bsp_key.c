@@ -9,6 +9,9 @@
 #include "initcall.h"
 #include "alarm.h"
 
+/* KeyTaskHandler周期性扫描 g_keyConfig 中的所有key，并执行相应的回调函数
+如果想要使用key，需要先调用key_handlerRegister函数注册回调函数
+*/
 /// @brief count pluse ms of the pin
 /// @return The duration of the key pressed
 UINT32 KeyPressedDurationMs(Key_ScanST *key)

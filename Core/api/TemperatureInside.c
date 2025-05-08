@@ -1,6 +1,4 @@
 
-#define GLOBALS_TEMPINSIDE_DRV
-
 #include "FreeRTOS.h"
 #include "Types.h"
 #include "debug_print.h"
